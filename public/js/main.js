@@ -24556,7 +24556,7 @@ var Blog = React.createClass({
     },
     componentWillMount: function () {
         Http.get('/posts').then(function (data) {
-            console.log('data:', data);
+            //console.log('data:', data);
             // setState will cause the render function to be called
             this.setState({ posts: data });
         }.bind(this));
@@ -24639,26 +24639,35 @@ var BlogPosts = React.createClass({
 
     render: function () {
 
-        // default blog post width is 4/12
-        var blogPostClass = 'col-md-4';
-        var buttonClass = 'btn btn-default';
-        var buttonText = 'View details »';
-        // make the first blog post full width
+        /**
+         * The first blog post gets an h1 title
+         */
         if (this.props.id == 1) {
-            blogPostClass = 'col-md-12 jumbotron';
-            buttonClass = 'btn btn-primary';
-            buttonText = 'Learn more »';
+            return React.createElement(
+                'div',
+                { className: 'col-md-12 jumbotron' },
+                React.createElement(
+                    'h1',
+                    null,
+                    this.props.title
+                ),
+                this.props.summary,
+                React.createElement('br', null),
+                React.createElement(
+                    'a',
+                    { className: 'btn btn-primary', href: '/#/blog/' + this.props.id, role: 'button' },
+                    'Learn more »'
+                ),
+                React.createElement('br', null),
+                React.createElement('br', null)
+            );
         }
 
-        // the first blog post gets an h1 title
+        // default blog post width is 4/12
         return React.createElement(
             'div',
-            { className: blogPostClass },
-            this.props.id == 1 ? React.createElement(
-                'h1',
-                null,
-                this.props.title
-            ) : React.createElement(
+            { className: 'col-md-4' },
+            React.createElement(
                 'h4',
                 null,
                 this.props.title
@@ -24667,8 +24676,8 @@ var BlogPosts = React.createClass({
             React.createElement('br', null),
             React.createElement(
                 'a',
-                { className: buttonClass, href: '/#/blog/' + this.props.id, role: 'button' },
-                buttonText
+                { className: 'btn btn-default', href: '/#/blog/' + this.props.id, role: 'button' },
+                'View details »'
             ),
             React.createElement('br', null),
             React.createElement('br', null)
@@ -24764,7 +24773,7 @@ var service = {
 
     get: function (url) {
         return fetch(baseUrl + url, {}).then(function (response) {
-            console.log('RES:', response);
+            //console.log('RES:', response);
             return response.json();
         });
     }

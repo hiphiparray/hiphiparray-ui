@@ -12,7 +12,7 @@ var Blog = React.createClass({
     componentWillMount: function () {
         Http.get('/posts')
             .then(function (data) {
-                console.log('data:', data);
+                //console.log('data:', data);
                 // setState will cause the render function to be called
                 this.setState({posts: data});
             }.bind(this));

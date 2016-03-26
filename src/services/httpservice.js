@@ -7,7 +7,7 @@ var service = {
     get: function (url) {
         return fetch(baseUrl + url, {})
             .then(function (response) {
-                console.log('RES:', response);
+                //console.log('RES:', response);
                 return response.json();
             });
     },
