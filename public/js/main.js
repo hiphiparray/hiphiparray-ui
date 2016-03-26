@@ -24543,8 +24543,10 @@ module.exports = Routes;
 
 },{"./components/Blog.jsx":222,"./components/BlogPost.jsx":223,"history":46,"react":217,"react-router":82}],222:[function(require,module,exports){
 var React = require('react');
-var BlogPosts = require('./BlogPosts.jsx');
 var Http = require('../services/httpservice');
+var BlogPosts = require('./BlogPosts.jsx');
+var Header = require('./Header.jsx');
+var Footer = require('./Footer.jsx');
 
 var Blog = React.createClass({
     displayName: 'Blog',
@@ -24565,17 +24567,25 @@ var Blog = React.createClass({
         });
         return React.createElement(
             'div',
-            { className: 'row' },
-            blogPosts
+            null,
+            React.createElement(Header, null),
+            React.createElement(
+                'div',
+                { className: 'row' },
+                blogPosts
+            ),
+            React.createElement(Footer, null)
         );
     }
 });
 
 module.exports = Blog;
 
-},{"../services/httpservice":226,"./BlogPosts.jsx":224,"react":217}],223:[function(require,module,exports){
+},{"../services/httpservice":228,"./BlogPosts.jsx":224,"./Footer.jsx":225,"./Header.jsx":226,"react":217}],223:[function(require,module,exports){
 var React = require('react');
 var Http = require('../services/httpservice');
+var Header = require('./Header.jsx');
+var Footer = require('./Footer.jsx');
 
 var BlogPost = React.createClass({
     displayName: 'BlogPost',
@@ -24594,29 +24604,34 @@ var BlogPost = React.createClass({
     render: function () {
         return React.createElement(
             'div',
-            { className: 'row' },
+            null,
+            React.createElement(Header, null),
             React.createElement(
-                'h1',
-                null,
-                this.state.post.title
+                'div',
+                { className: 'row' },
+                React.createElement(
+                    'div',
+                    { className: 'jumbotron' },
+                    React.createElement(
+                        'h1',
+                        null,
+                        this.state.post.title
+                    )
+                ),
+                React.createElement(
+                    'p',
+                    null,
+                    this.state.post.body
+                )
             ),
-            React.createElement(
-                'p',
-                null,
-                this.state.post.body
-            ),
-            React.createElement(
-                'a',
-                { className: 'btn btn-success', href: '/#/', role: 'button' },
-                '« Back'
-            )
+            React.createElement(Footer, null)
         );
     }
 });
 
 module.exports = BlogPost;
 
-},{"../services/httpservice":226,"react":217}],224:[function(require,module,exports){
+},{"../services/httpservice":228,"./Footer.jsx":225,"./Header.jsx":226,"react":217}],224:[function(require,module,exports){
 var React = require('react');
 
 var BlogPosts = React.createClass({
@@ -24625,12 +24640,12 @@ var BlogPosts = React.createClass({
     render: function () {
 
         // default blog post width is 4/12
-        var postClass = 'col-md-4';
+        var blogPostClass = 'col-md-4';
         var buttonClass = 'btn btn-default';
         var buttonText = 'View details »';
         // make the first blog post full width
         if (this.props.id == 1) {
-            postClass = 'col-md-12';
+            blogPostClass = 'col-md-12 jumbotron';
             buttonClass = 'btn btn-primary';
             buttonText = 'Learn more »';
         }
@@ -24638,7 +24653,7 @@ var BlogPosts = React.createClass({
         // the first blog post gets an h1 title
         return React.createElement(
             'div',
-            { className: postClass },
+            { className: blogPostClass },
             this.props.id == 1 ? React.createElement(
                 'h1',
                 null,
@@ -24665,12 +24680,82 @@ module.exports = BlogPosts;
 
 },{"react":217}],225:[function(require,module,exports){
 var React = require('react');
+
+var Footer = React.createClass({
+    displayName: "Footer",
+
+    render: function () {
+
+        return React.createElement(
+            "footer",
+            { className: "footer" },
+            React.createElement(
+                "p",
+                null,
+                "© 2016 Company, Inc."
+            )
+        );
+    }
+});
+
+module.exports = Footer;
+
+},{"react":217}],226:[function(require,module,exports){
+var React = require('react');
+
+var Header = React.createClass({
+    displayName: "Header",
+
+    render: function () {
+
+        return React.createElement(
+            "div",
+            { className: "header clearfix" },
+            React.createElement(
+                "nav",
+                null,
+                React.createElement(
+                    "ul",
+                    { className: "nav nav-pills pull-right" },
+                    React.createElement(
+                        "li",
+                        { className: "active", role: "presentation" },
+                        React.createElement(
+                            "a",
+                            { href: "/#/" },
+                            "Home"
+                        )
+                    ),
+                    React.createElement(
+                        "li",
+                        { role: "presentation" },
+                        React.createElement(
+                            "a",
+                            { href: "#" },
+                            "Login"
+                        )
+                    )
+                )
+            ),
+            React.createElement(
+                "h3",
+                { className: "text-muted" },
+                "Hip Hip Array"
+            )
+        );
+    }
+});
+
+module.exports = Header;
+
+},{"react":217}],227:[function(require,module,exports){
+var React = require('react');
 var ReactDOM = require('react-dom');
 var Routes = require('./Routes.jsx');
 
 ReactDOM.render(Routes, document.getElementById('main'));
 
-},{"./Routes.jsx":221,"react":217,"react-dom":54}],226:[function(require,module,exports){
+},{"./Routes.jsx":221,"react":217,"react-dom":54}],228:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 // var baseUrl = 'http://localhost:6060';
 var baseUrl = 'http://api.hiphiparray.dev/1.0';
@@ -24688,4 +24773,4 @@ var service = {
 //post:
 module.exports = service;
 
-},{"whatwg-fetch":220}]},{},[225]);
+},{"whatwg-fetch":220}]},{},[227]);

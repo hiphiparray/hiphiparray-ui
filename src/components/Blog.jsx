@@ -1,6 +1,8 @@
 var React = require('react');
-var BlogPosts = require('./BlogPosts.jsx');
 var Http = require('../services/httpservice');
+var BlogPosts = require('./BlogPosts.jsx');
+var Header = require('./Header.jsx');
+var Footer = require('./Footer.jsx');
 
 
 var Blog = React.createClass({
@@ -19,7 +21,13 @@ var Blog = React.createClass({
         var blogPosts = this.state.posts.map(function (post) {
             return <BlogPosts key={post.id} id={post.id} title={post.title} summary={post.summary}/>;
         });
-        return (<div className="row">{blogPosts}</div>);
+        return (
+            <div>
+                <Header />
+                <div className="row">{blogPosts}</div>
+                <Footer />
+            </div>
+        );
     }
 });
 

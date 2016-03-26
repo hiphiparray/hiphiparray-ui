@@ -1,5 +1,7 @@
 var React = require('react');
 var Http = require('../services/httpservice');
+var Header = require('./Header.jsx');
+var Footer = require('./Footer.jsx');
 
 var BlogPost = React.createClass({
     getInitialState: function () {
@@ -15,11 +17,18 @@ var BlogPost = React.createClass({
             }.bind(this));
     },
     render: function () {
-        return (<div className="row">
-            <h1>{this.state.post.title}</h1>
-            <p>{this.state.post.body}</p>
-            <a className="btn btn-success" href='/#/' role="button">« Back</a>
-        </div>);
+        return (
+            <div>
+                <Header />
+                <div className="row">
+                    <div className="jumbotron">
+                        <h1>{this.state.post.title}</h1>
+                    </div>
+                    <p>{this.state.post.body}</p>
+                </div>
+                <Footer />
+            </div>
+        );
     }
 });
 
