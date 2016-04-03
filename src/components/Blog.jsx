@@ -4,18 +4,20 @@ var BlogPosts = require('./BlogPosts.jsx');
 var Header = require('./Header.jsx');
 var Footer = require('./Footer.jsx');
 
+var Reflux = require('reflux');
+var Actions = require('../reflux/actions.jsx');
+var ContentStore = require('../reflux/content-store.jsx');
 
 var Blog = React.createClass({
+    mixins: [Reflux.listenTo(ContentStore, 'onChange')],
     getInitialState: function () {
         return {posts: []};
     },
     componentWillMount: function () {
-        Http.get('/posts')
-            .then(function (data) {
-                //console.log('data:', data);
-                // setState will cause the render function to be called
-                this.setState({posts: data});
-            }.bind(this));
+        Actions.getHomePage();
+    },
+    onChange: function(event, data) {
+        this.setState({posts: data});
     },
     render: function () {
         var blogPosts = this.state.posts.map(function (post) {

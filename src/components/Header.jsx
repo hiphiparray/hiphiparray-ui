@@ -11,6 +11,7 @@ var Header = React.createClass({
                         <li role="presentation"><a href="#">Login</a></li>
                     </ul>
                 </nav>
+                
                 <h3 className="text-muted">Hip Hip Array</h3>
             </div>
         );

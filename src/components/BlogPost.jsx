@@ -1,20 +1,21 @@
 var React = require('react');
-var Http = require('../services/httpservice');
 var Header = require('./Header.jsx');
 var Footer = require('./Footer.jsx');
 
+var Reflux = require('reflux');
+var Actions = require('../reflux/actions.jsx');
+var ContentStore = require('../reflux/content-store.jsx');
+
 var BlogPost = React.createClass({
+    mixins: [Reflux.listenTo(ContentStore, 'onChange')],
     getInitialState: function () {
         return {post: []};
     },
     componentWillMount: function () {
-        //console.log('props:', this.props);
-        Http.get('/posts/' + this.props.params.postId)
-            .then(function (data) {
-                //console.log('data:', data);
-                // setState will cause the render function to be called
-                this.setState({post: data});
-            }.bind(this));
+        Actions.getBlogPost(this.props.params.postId);
+    },
+    onChange: function(event, data) {
+        this.setState({post: data});
     },
     render: function () {
         return (
