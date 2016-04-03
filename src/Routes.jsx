@@ -5,6 +5,9 @@ var Route = require('react-router').Route;
 
 var Blog = require('./components/Blog.jsx');
 var BlogPost = require('./components/BlogPost.jsx');
+var Secure = require('./components/Secure.jsx');
+var Login = require('./components/Login.jsx');
+
 
 
 /**
@@ -22,6 +25,7 @@ var Routes = (
         <Route path="/blog" component={BlogPost}>
             <Route path="/blog/:postId" component={BlogPost}/>
         </Route>
+        <Route path="/login" component={Login}/>
     </Router>
 );
 

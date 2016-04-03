@@ -25866,6 +25866,8 @@ var Route = require('react-router').Route;
 
 var Blog = require('./components/Blog.jsx');
 var BlogPost = require('./components/BlogPost.jsx');
+var Secure = require('./components/Secure.jsx');
+var Login = require('./components/Login.jsx');
 
 /**
  * This will remove the query key from the url (eg. /index.html#/?_k=8yo97w)
@@ -25884,12 +25886,14 @@ var Routes = React.createElement(
         Route,
         { path: '/blog', component: BlogPost },
         React.createElement(Route, { path: '/blog/:postId', component: BlogPost })
-    )
+    ),
+    React.createElement(Route, { path: '/secure', component: Secure }),
+    React.createElement(Route, { path: '/login', component: Login })
 );
 
 module.exports = Routes;
 
-},{"./components/Blog.jsx":241,"./components/BlogPost.jsx":242,"history":47,"react":218,"react-router":83}],241:[function(require,module,exports){
+},{"./components/Blog.jsx":241,"./components/BlogPost.jsx":242,"./components/Login.jsx":246,"./components/Secure.jsx":247,"history":47,"react":218,"react-router":83}],241:[function(require,module,exports){
 var React = require('react');
 var Http = require('../services/httpservice');
 var BlogPosts = require('./BlogPosts.jsx');
@@ -25933,9 +25937,8 @@ var Blog = React.createClass({
 
 module.exports = Blog;
 
-},{"../reflux/actions.jsx":247,"../reflux/content-store.jsx":248,"../services/httpservice":249,"./BlogPosts.jsx":243,"./Footer.jsx":244,"./Header.jsx":245,"react":218,"reflux":234}],242:[function(require,module,exports){
+},{"../reflux/actions.jsx":249,"../reflux/content-store.jsx":250,"../services/httpservice":251,"./BlogPosts.jsx":243,"./Footer.jsx":244,"./Header.jsx":245,"react":218,"reflux":234}],242:[function(require,module,exports){
 var React = require('react');
-var Http = require('../services/httpservice');
 var Header = require('./Header.jsx');
 var Footer = require('./Footer.jsx');
 
@@ -25952,14 +25955,6 @@ var BlogPost = React.createClass({
     },
     componentWillMount: function () {
         Actions.getBlogPost(this.props.params.postId);
-
-        // //console.log('props:', this.props);
-        // Http.get('/posts/' + this.props.params.postId)
-        //     .then(function (data) {
-        //         //console.log('data:', data);
-        //         // setState will cause the render function to be called
-        //         this.setState({post: data});
-        //     }.bind(this));
     },
     onChange: function (event, data) {
         this.setState({ post: data });
@@ -25994,7 +25989,7 @@ var BlogPost = React.createClass({
 
 module.exports = BlogPost;
 
-},{"../reflux/actions.jsx":247,"../reflux/content-store.jsx":248,"../services/httpservice":249,"./Footer.jsx":244,"./Header.jsx":245,"react":218,"reflux":234}],243:[function(require,module,exports){
+},{"../reflux/actions.jsx":249,"../reflux/content-store.jsx":250,"./Footer.jsx":244,"./Header.jsx":245,"react":218,"reflux":234}],243:[function(require,module,exports){
 var React = require('react');
 
 var BlogPosts = React.createClass({
@@ -26103,7 +26098,7 @@ var Header = React.createClass({
                         { role: "presentation" },
                         React.createElement(
                             "a",
-                            { href: "#" },
+                            { href: "/#/login" },
                             "Login"
                         )
                     )
@@ -26122,19 +26117,160 @@ module.exports = Header;
 
 },{"react":218}],246:[function(require,module,exports){
 var React = require('react');
+var Http = require('../services/httpservice');
+var Header = require('./Header.jsx');
+var Footer = require('./Footer.jsx');
+
+var Reflux = require('reflux');
+var Actions = require('../reflux/actions.jsx');
+var ContentStore = require('../reflux/content-store.jsx');
+
+var Login = React.createClass({
+    displayName: 'Login',
+
+    mixins: [Reflux.listenTo(ContentStore, 'onChange')],
+    getInitialState: function () {
+        return { token: [], username: '', password: '' };
+    },
+    componentWillMount: function () {
+        //Actions.getAccessToken();
+    },
+    onChange: function (event, data) {
+        this.setState({ token: data });
+    },
+    onInputChange: function (name, e) {
+        var change = {};
+        change[name] = e.target.value;
+        console.log('change:', change);
+        this.setState(change);
+    },
+    onClick: function (e) {
+        if (this.state.username && this.state.password) {
+            console.log('state:', this.state);
+            Actions.getAccessToken(this.state.username, this.state.password);
+        }
+    },
+    render: function () {
+
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(Header, null),
+            React.createElement(
+                'h1',
+                null,
+                'Login'
+            ),
+            React.createElement(
+                'div',
+                { className: 'row' },
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-5' },
+                    React.createElement(
+                        'fieldset',
+                        { className: 'form-group' },
+                        React.createElement(
+                            'label',
+                            null,
+                            'Email address'
+                        ),
+                        React.createElement('input', { className: 'form-control', placeholder: 'Username', value: this.state.username,
+                            onChange: this.onInputChange.bind(this, 'username') })
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-5' },
+                    React.createElement(
+                        'fieldset',
+                        { className: 'form-group' },
+                        React.createElement(
+                            'label',
+                            null,
+                            'Password'
+                        ),
+                        React.createElement('input', { className: 'form-control', placeholder: 'Password', value: this.state.password,
+                            onChange: this.onInputChange.bind(this, 'password') })
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-2 login-btn' },
+                    React.createElement(
+                        'fieldset',
+                        { className: 'form-group' },
+                        React.createElement(
+                            'button',
+                            { className: 'btn btn-primary', onClick: this.onClick },
+                            'Login'
+                        )
+                    )
+                )
+            ),
+            React.createElement(Footer, null)
+        );
+    }
+});
+
+module.exports = Login;
+
+},{"../reflux/actions.jsx":249,"../reflux/content-store.jsx":250,"../services/httpservice":251,"./Footer.jsx":244,"./Header.jsx":245,"react":218,"reflux":234}],247:[function(require,module,exports){
+var React = require('react');
+var Http = require('../services/httpservice');
+var Header = require('./Header.jsx');
+var Footer = require('./Footer.jsx');
+
+var Reflux = require('reflux');
+var Actions = require('../reflux/actions.jsx');
+var ContentStore = require('../reflux/content-store.jsx');
+
+var Secure = React.createClass({
+    displayName: 'Secure',
+
+    mixins: [Reflux.listenTo(ContentStore, 'onChange')],
+    getInitialState: function () {
+        return { posts: [] };
+    },
+    componentWillMount: function () {
+        Actions.getAccessToken();
+    },
+    onChange: function (event, data) {
+        this.setState({ posts: data });
+    },
+    render: function () {
+
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(Header, null),
+            React.createElement(
+                'h1',
+                null,
+                'Secure'
+            ),
+            React.createElement(Footer, null)
+        );
+    }
+});
+
+module.exports = Secure;
+
+},{"../reflux/actions.jsx":249,"../reflux/content-store.jsx":250,"../services/httpservice":251,"./Footer.jsx":244,"./Header.jsx":245,"react":218,"reflux":234}],248:[function(require,module,exports){
+var React = require('react');
 var ReactDOM = require('react-dom');
 var Routes = require('./Routes.jsx');
 
 ReactDOM.render(Routes, document.getElementById('main'));
 
-},{"./Routes.jsx":240,"react":218,"react-dom":55}],247:[function(require,module,exports){
+},{"./Routes.jsx":240,"react":218,"react-dom":55}],249:[function(require,module,exports){
 var Reflux = require('reflux');
 
-var Actions = Reflux.createActions(['getHomePage', 'getBlogPost', 'createBlogPost']);
+var Actions = Reflux.createActions(['getHomePage', 'getBlogPost', 'createBlogPost', 'getAccessToken']);
 
 module.exports = Actions;
 
-},{"reflux":234}],248:[function(require,module,exports){
+},{"reflux":234}],250:[function(require,module,exports){
 var Http = require('../services/httpservice');
 var Reflux = require('reflux');
 var Actions = require('./actions.jsx');
@@ -26142,48 +26278,88 @@ var Actions = require('./actions.jsx');
 var ContentStore = Reflux.createStore({
     listenables: [Actions],
     getHomePage: function () {
-        Http.get('/posts').then(function (json) {
-            this.content = json;
+        Http.get('/posts').then(function (data) {
+            this.content = data;
             this.fireUpdate();
         }.bind(this));
     },
     getBlogPost: function (postId) {
         //console.log('props:', this.props);
         console.log('postId:', postId);
-        Http.get('/posts/' + postId).then(function (json) {
-            this.content = json;
-            console.log('content:', json);
+        Http.get('/posts/' + postId).then(function (data) {
+            this.content = data;
+            //console.log('content:', data);
             this.fireUpdate();
         }.bind(this));
     },
     createBlogPost: function (title, body) {
-        // Posted blog post to server and received successful callback
+        //TODO: Posted blog post to server and received successful callback
 
+    },
+    getAccessToken: function (username, password) {
+        console.log('username:', username);
+        console.log('password:', password);
+
+        Http.login('/login_check', username, password).then(function (response) {
+            this.token = response;
+            console.log('token:', response);
+            //this.fireUpdate();
+        }.bind(this));
     },
     //Refresh Function
     fireUpdate: function () {
+
         this.trigger('change', this.content);
     }
 });
 
 module.exports = ContentStore;
 
-},{"../services/httpservice":249,"./actions.jsx":247,"reflux":234}],249:[function(require,module,exports){
+},{"../services/httpservice":251,"./actions.jsx":249,"reflux":234}],251:[function(require,module,exports){
 var Fetch = require('whatwg-fetch');
 // var baseUrl = 'http://localhost:6060';
-var baseUrl = 'http://api.hiphiparray.dev/1.0';
+var baseUrl = 'http://api.hiphiparray.dev/app_dev.php/1.0';
 
 var service = {
-
     get: function (url) {
         return fetch(baseUrl + url, {}).then(function (response) {
             //console.log('RES:', response);
             return response.json();
         });
+    },
+    login: function (url, username, password) {
+        console.log('httpservice: ', JSON.stringify({ "_username": username, "_password": password }));
+        return fetch(baseUrl + url, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'post',
+            body: JSON.stringify({ "_username": username, "_password": password })
+            // }).then(function (response) {
+            //     return response;
+        }).then(this.checkStatus).then(this.parseJSON).then(function (data) {
+            //TODO: save token
+            console.log('request succeeded with JSON response', data);
+        }).catch(function (error) {
+            //TODO: show error message
+            console.log('request failed', error);
+        });
+    },
+    checkStatus: function (response) {
+        if (response.status >= 200 && response.status < 300) {
+            return response;
+        } else {
+            var error = new Error(response.statusText);
+            error.response = response;
+            throw error;
+        }
+    },
+    parseJSON: function (response) {
+        return response.json();
     }
 };
 
-//post:
 module.exports = service;
 
-},{"whatwg-fetch":239}]},{},[246]);
+},{"whatwg-fetch":239}]},{},[248]);
